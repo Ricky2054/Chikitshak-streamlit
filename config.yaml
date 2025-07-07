@@ -1,0 +1,6 @@
+models:
+  gatekeeper: llama3.2:1b
+  doctor: deepseek-r1:1.5b
+  supervisor: llama3.2:1b
+  embedder: nomic-embed-text
+vectorstore: faiss 

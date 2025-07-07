@@ -1,0 +1,9 @@
+streamlit
+ollama
+langchain
+faiss-cpu
+chromadb
+pypdf
+Pillow
+PyYAML
+langchain_community 
