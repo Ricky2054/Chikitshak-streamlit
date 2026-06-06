@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "Plataforma de Educación Clínica",
+    "tagline": "Aprendizaje médico asistido por IA — seguro y basado en evidencia.",
+    "footer": "MedRAG · Multi-agent RAG"
+  },
+  "lang": {
+    "label": "Idioma",
+    "voiceHint": "Voz con Google Web Speech en Chrome/Edge"
+  },
+  "form": {
+    "inputTypeLegend": "¿Qué desea analizar?",
+    "symptoms": "Síntomas",
+    "symptomsDesc": "Signos y quejas",
+    "prescription": "Receta",
+    "prescriptionDesc": "Revisar medicamentos",
+    "testResults": "Resultados",
+    "testResultsDesc": "Informes de laboratorio",
+    "caseLabel": "Describa su caso",
+    "casePlaceholder": "Incluya edad, síntomas, duración…",
+    "tryExample": "Ejemplo:",
+    "attachLabel": "Adjuntar documento",
+    "optional": "(opcional)",
+    "dropHint": "Suelte el archivo aquí",
+    "dropBrowse": "o haga clic",
+    "removeFile": "Quitar",
+    "submit": "Obtener información clínica",
+    "analyzing": "Analizando…"
+  },
+  "voice": {
+    "start": "Entrada de voz",
+    "stop": "Detener",
+    "listen": "Escuchando…",
+    "unsupported": "Requiere Chrome/Edge",
+    "readAloud": "Leer en voz alta",
+    "stopReading": "Detener lectura",
+    "reading": "Leyendo…"
+  },
+  "results": {
+    "title": "Resultados",
+    "subtitle": "Análisis educativo",
+    "complete": "Completo",
+    "summary": "Resumen",
+    "guidance": "Orientación",
+    "redFlags": "Señales de alerta",
+    "sources": "Fuentes",
+    "supervisorPlan": "Plan del supervisor",
+    "treatmentPlan": "Plan de tratamiento",
+    "suggestedTests": "Pruebas sugeridas",
+    "readyTitle": "Listo",
+    "readyText": "Envíe un caso para comenzar.",
+    "feature1": "Pipeline de seguridad",
+    "feature2": "Búsqueda RAG",
+    "feature3": "Salida estructurada",
+    "blocked": "Bloqueado",
+    "error": "Error",
+    "blockedHint": "Solo educativo.",
+    "failed": "Falló"
+  },
+  "loading": {
+    "title": "Analizando",
+    "subtitle": "Revisando protocolos…",
+    "safety": "Control de seguridad",
+    "doctor": "Análisis clínico",
+    "supervisor": "Revisión"
+  },
+  "examples": {
+    "symptoms1": "Síntomas",
+    "symptoms2": "Síntomas",
+    "tests1": "Pruebas"
+  }
+}

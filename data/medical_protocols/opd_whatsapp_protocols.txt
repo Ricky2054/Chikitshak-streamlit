@@ -1,0 +1,87 @@
+# OPD Clinical Protocols — Source: Institutional WhatsApp Notes
+# Educational reference for MedRAG knowledge base. Clinician must verify before prescribing.
+
+## Urinary Tract Infection (UTI)
+- Non-pharmacological: Drink plenty of water
+- Antibiotics according to culture/sensitivity when available
+- Common regimens (uncomplicated cystitis, adult):
+  - Levofloxacin 500-750 mg once daily x 7-10 days OR
+  - Nitrofurantoin 100 mg twice daily x 7-10 days
+- Adjunct: Alkasol syrup 2 tsp twice daily x 7 days
+- Symptomatic: Flavoxate/Urispas 100 mg twice daily OR 200 mg once daily x 3-4 days
+
+## Acute Gastroenteritis (AGE)
+- Plenty of oral fluids, ORS
+- Ciprofloxacin 500 mg twice daily x 5 days
+- Metronidazole 400 mg three times daily x 5 days
+- Probiotic: Econorm sachet once with half glass water twice daily x 14 days
+- Paracetamol 650 mg as needed for fever
+- Follow up at medical OPD/ER if worsening
+
+## Common Antibiotic Reference (OPD)
+- Azithromycin 500 mg once daily x 5 days
+- Amoxicillin-clavulanate 625 mg three times daily x 5 days
+- Doxycycline 100 mg twice daily x 7-10 days
+- Nitrofurantoin 100 mg twice daily x 7-14 days
+- Ciprofloxacin 500 mg twice daily x 5 days
+- Metronidazole 400 mg three times daily x 5 days
+- Cefixime 200 mg twice daily x 5 days
+- Levofloxacin 500-750 mg once daily x 7 days
+
+## Vertigo
+- Betahistine (Vertin) 16 mg three times daily x 7 days
+- Prochlorperazine (Stemetil-MD) 1 tab SOS for nausea/vomiting
+
+## Lower Respiratory Tract Infection (LRTI) — Cough with expectoration and fever
+- Amoxicillin-clavulanate 625 mg three times daily x 5 days
+- Paracetamol 650 mg twice daily after food x 5 days
+- Plenty of water
+- Cough syrup: Ascoril-LS OR Grilinctus-BM 10 ml three times daily x 7 days
+- Mucinac 600: 1 tab in half glass water twice daily x 3 days
+
+## Secretory / Watery Diarrhoea
+- Racecadotril 100 mg three times daily x 2 days (e.g. Zedott) — reduces stool frequency
+
+## First Diagnosis Diabetes (RBS > 200)
+- Metformin 500-1000 mg twice daily after food — continue
+- Glimepiride 1 mg twice daily after food — continue
+- Refer to diabetic/retina clinic
+
+## Wheeze / Rhonchi (add-on)
+- Duolin MDI 2 puffs three times daily — continue
+
+## Sore Throat / Upper Respiratory Tract Infection (URTI)
+- Azithromycin 500 mg once daily x 5 days
+- Montelukast-Levocetirizine 10/5 mg once daily at bedtime x 10 days
+- Multivitamin/B-complex twice daily after food x 14 days
+- Plenty of water
+- Chlorhexidine gargle three times daily x few days
+- Paracetamol 650 mg twice daily after food x 5 days
+
+## Severe Headache (migraine-type, no red flags)
+- Naproxen/Domperidone combination (Naxdom 250/10) twice daily x 5 days
+- Pantoprazole 40 mg once daily before breakfast x 1 month
+- Amitriptyline 25 mg once daily x 3 months (migraine prophylaxis)
+
+## Low Back Pain
+- Ibuprofen (Brufen) 400 mg twice daily x 14 days
+- Thiocolchicoside (FM) 20 mg twice daily after food x 14 days
+- Calcium carbonate/Vitamin D (500/250) once daily after food — continue
+- If radiation to lower limb: Methylcobalamin + Pregabalin (1500/75) once daily at bedtime x 1 month
+- Branded alternative: Zerodol-MR twice daily after food x 14 days
+- Advice: X-ray lumbosacral spine AP/Lateral; ortho OPD follow-up at 2 weeks
+
+## Gastritis / Peptic Ulcer Disease
+- Avoid spicy diet; small frequent meals
+- Pantoprazole 40 mg once daily before breakfast x 4 weeks
+- Drotaverine (Drotin) 40 mg SOS
+- Sucralfate suspension 15 ml twice daily x 14 days (30 min before food)
+- H. pylori suspected: H. pylori kit twice daily x 14 days
+
+## Hypertension
+- Emergency if > 180/110: Labetalol 20 mg IV slowly STAT; recheck BP after 1 hour
+- Target range management 140/90 to 180/110:
+  - Salt-restricted diet
+  - Amlodipine 10 mg once daily before breakfast — continue
+  - Pantoprazole 40 mg once daily before breakfast x 1 month
+  - If anxiety: Clonazepam 0.25 mg once daily at bedtime x 10 days

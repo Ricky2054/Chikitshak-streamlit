@@ -1,6 +1,32 @@
+# Runtime configuration for Medical RAG System (deployable / OpenRouter)
+provider:
+  llm: openrouter          # openrouter | ollama
+  embeddings: local        # local | openrouter | ollama
+
 models:
-  gatekeeper: llama3.2:1b
-  doctor: deepseek-r1:1.5b
-  supervisor: llama3.2:1b
-  embedder: nomic-embed-text
-vectorstore: faiss 
+  doctor: meta-llama/llama-3.2-3b-instruct
+  supervisor: meta-llama/llama-3.2-3b-instruct
+  embedder: all-MiniLM-L6-v2   # local HuggingFace model (no API key needed)
+  # OpenRouter embedding alternative (set EMBEDDING_PROVIDER=openrouter):
+  # embedder: openai/text-embedding-3-small
+
+vectorstore: faiss
+
+knowledge_base:
+  paths:
+    - data/pdfs
+    - data/medical_protocols
+    - data/test_references
+    - data/drug_interactions
+  persist_dir: .cache/vectorstore
+  chunk_size: 1000
+  chunk_overlap: 200
+
+security:
+  disable_auth: true
+  allow_origins:
+    - "*"
+
+server:
+  host: 0.0.0.0
+  port: 8000

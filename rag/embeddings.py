@@ -1,28 +1,42 @@
-from langchain_community.embeddings import OllamaEmbeddings
-# For future: from langchain_ollama import OllamaEmbeddings (see deprecation warning)
+"""Embedding provider factory for the medical knowledge base."""
 
-def get_embedder(model="nomic-embed-text"):
-    return OllamaEmbeddings(model=model)
+from __future__ import annotations
 
-class MultimodalMedicalRAG:
-    def __init__(self):
-        self.text_embeddings = OllamaEmbeddings(model="nomic-embed-text")
-        # self.image_processor = MedicalImageProcessor()  # Placeholder for image processor
-    
-    def process_medical_document(self, file):
-        if hasattr(file, 'type') and file.type == "application/pdf":
-            return self.process_pdf(file)
-        elif hasattr(file, 'type') and file.type.startswith("image/"):
-            return self.process_image(file)
-        else:
-            return self.process_text(file)
-    
-    def process_pdf(self, file):
-        # TODO: Implement PDF processing
-        pass
-    def process_image(self, file):
-        # TODO: Implement image processing
-        pass
-    def process_text(self, file):
-        # TODO: Implement text processing
-        pass 
+import os
+
+
+def get_embedder(model: str | None = None):
+    provider = os.getenv("EMBEDDING_PROVIDER", "local").strip().lower()
+    model = model or os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+
+    if provider == "openrouter":
+        return _get_openrouter_embedder(model)
+
+    if provider == "ollama":
+        try:
+            from langchain_ollama import OllamaEmbeddings
+        except Exception:  # pragma: no cover
+            from langchain_community.embeddings import OllamaEmbeddings
+
+        return OllamaEmbeddings(model=model)
+
+    return _get_local_embedder(model)
+
+
+def _get_local_embedder(model: str):
+    try:
+        from langchain_huggingface import HuggingFaceEmbeddings
+    except Exception:  # pragma: no cover
+        from langchain_community.embeddings import HuggingFaceEmbeddings
+
+    return HuggingFaceEmbeddings(
+        model_name=model,
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={"normalize_embeddings": True},
+    )
+
+
+def _get_openrouter_embedder(model: str):
+    from rag.openrouter_embeddings import OpenRouterEmbeddings
+
+    return OpenRouterEmbeddings(model=model)

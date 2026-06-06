@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "क्लिनिकल शिक्षण व्यासपीठ",
+    "tagline": "AI-सहाय्यित वैद्यकीय शिक्षण — सुरक्षित आणि पुरावा-आधारित.",
+    "footer": "MedRAG · Multi-agent RAG"
+  },
+  "lang": {
+    "label": "भाषा",
+    "voiceHint": "Chrome/Edge मध्ये Google Web Speech"
+  },
+  "form": {
+    "inputTypeLegend": "काय विश्लेषण करायचे?",
+    "symptoms": "लक्षणे",
+    "symptomsDesc": "चिन्हे आणि तक्रारी",
+    "prescription": "प्रिस्क्रिप्शन",
+    "prescriptionDesc": "औषधे तपासा",
+    "testResults": "चाचणी निकाल",
+    "testResultsDesc": "लॅब अहवाल",
+    "caseLabel": "तुमचा केस सांगा",
+    "casePlaceholder": "वय, लक्षणे, कालावधी…",
+    "tryExample": "उदाहरण:",
+    "attachLabel": "दस्तऐवज जोडा",
+    "optional": "(पर्यायी)",
+    "dropHint": "फाइल येथे सोडा",
+    "dropBrowse": "किंवा क्लिक करा",
+    "removeFile": "काढा",
+    "submit": "वैद्यकीय माहिती मिळवा",
+    "analyzing": "विश्लेषण…"
+  },
+  "voice": {
+    "start": "आवाज इनपुट",
+    "stop": "थांबवा",
+    "listen": "ऐकत आहे…",
+    "unsupported": "Chrome/Edge आवश्यक",
+    "readAloud": "मोठ्याने वाचा",
+    "stopReading": "थांबवा",
+    "reading": "वाचत आहे…"
+  },
+  "results": {
+    "title": "निकाल",
+    "subtitle": "शैक्षणिक विश्लेषण",
+    "complete": "पूर्ण",
+    "summary": "सारांश",
+    "guidance": "मार्गदर्शन",
+    "redFlags": "धोक्याची चिन्हे",
+    "sources": "स्रोत",
+    "supervisorPlan": "पर्यवेक्षक योजना",
+    "treatmentPlan": "उपचार योजना",
+    "suggestedTests": "चाचण्या",
+    "readyTitle": "तयार",
+    "readyText": "केस सादर करा.",
+    "feature1": "सुरक्षा pipeline",
+    "feature2": "RAG शोध",
+    "feature3": "संरचित निकाल",
+    "blocked": "अवरोधित",
+    "error": "त्रुटी",
+    "blockedHint": "केवळ शिक्षण.",
+    "failed": "अयशस्वी"
+  },
+  "loading": {
+    "title": "विश्लेषण",
+    "subtitle": "प्रोटोकॉलशी तुलना…",
+    "safety": "सुरक्षा",
+    "doctor": "विश्लेषण",
+    "supervisor": "पर्यवेक्षण"
+  },
+  "examples": {
+    "symptoms1": "लक्षणे",
+    "symptoms2": "लक्षणे",
+    "tests1": "चाचणी"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "ক্লিনিকাল শিক্ষা প্ল্যাটফর্ম",
+    "tagline": "AI-সহায়তায় চিকিৎসা শিক্ষা — নিরাপদ ও প্রমাণ-ভিত্তিক।",
+    "footer": "MedRAG · Multi-agent RAG"
+  },
+  "lang": {
+    "label": "ভাষা",
+    "voiceHint": "Chrome/Edge-এ Google Web Speech"
+  },
+  "form": {
+    "inputTypeLegend": "কী বিশ্লেষণ করতে চান?",
+    "symptoms": "লক্ষণ",
+    "symptomsDesc": "লক্ষণ ও অভিযোগ",
+    "prescription": "প্রেসক্রিপশন",
+    "prescriptionDesc": "ওষুধ পর্যালোচনা",
+    "testResults": "টেস্ট ফলাফল",
+    "testResultsDesc": "ল্যাব রিপোর্ট",
+    "caseLabel": "আপনার কেস বর্ণনা করুন",
+    "casePlaceholder": "বয়স, লক্ষণ, সময়কাল…",
+    "tryExample": "উদাহরণ:",
+    "attachLabel": "নথি সংযুক্ত",
+    "optional": "(ঐচ্ছিক)",
+    "dropHint": "ফাইল এখানে ফেলুন",
+    "dropBrowse": "অথবা ক্লিক করুন",
+    "removeFile": "সরান",
+    "submit": "চিকিৎসা তথ্য পান",
+    "analyzing": "বিশ্লেষণ…"
+  },
+  "voice": {
+    "start": "ভয়েস ইনপুট",
+    "stop": "থামুন",
+    "listen": "শুনছে…",
+    "unsupported": "Chrome/Edge প্রয়োজন",
+    "readAloud": "জোরে পড়ুন",
+    "stopReading": "থামুন",
+    "reading": "পড়ছে…"
+  },
+  "results": {
+    "title": "ফলাফল",
+    "subtitle": "শিক্ষামূলক বিশ্লেষণ",
+    "complete": "সম্পূর্ণ",
+    "summary": "সারসংক্ষেপ",
+    "guidance": "নির্দেশনা",
+    "redFlags": "সতর্কতা",
+    "sources": "উৎস",
+    "supervisorPlan": "সুপারভাইজার পরিকল্পনা",
+    "treatmentPlan": "চিকিৎসা পরিকল্পনা",
+    "suggestedTests": "পরীক্ষা",
+    "readyTitle": "প্রস্তুত",
+    "readyText": "কেস জমা দিন।",
+    "feature1": "নিরাপত্তা pipeline",
+    "feature2": "RAG অনুসন্ধান",
+    "feature3": "কাঠামোবদ্ধ ফলাফল",
+    "blocked": "অবরুদ্ধ",
+    "error": "ত্রুটি",
+    "blockedHint": "শুধু শিক্ষামূলক।",
+    "failed": "ব্যর্থ"
+  },
+  "loading": {
+    "title": "বিশ্লেষণ",
+    "subtitle": "প্রোটোকলের সাথে তুলনা…",
+    "safety": "নিরাপত্তা",
+    "doctor": "বিশ্লেষণ",
+    "supervisor": "তত্ত্বাবধান"
+  },
+  "examples": {
+    "symptoms1": "লক্ষণ",
+    "symptoms2": "লক্ষণ",
+    "tests1": "টেস্ট"
+  }
+}

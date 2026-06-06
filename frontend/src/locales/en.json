@@ -1,0 +1,90 @@
+{
+  "app": {
+    "eyebrow": "Clinical Decision Support",
+    "tagline": "AI-assisted clinical analysis grounded in your medical protocols — structured and evidence-based.",
+    "footer": "MedRAG · Multi-agent RAG · Gatekeeper → Doctor → Supervisor"
+  },
+  "lang": {
+    "label": "Language",
+    "voiceHint": "Voice uses Google Web Speech in Chrome/Edge"
+  },
+  "form": {
+    "inputTypeLegend": "What would you like to analyze?",
+    "symptoms": "Symptoms",
+    "symptomsDesc": "Describe signs & complaints",
+    "prescription": "Prescription",
+    "prescriptionDesc": "Review medications",
+    "testResults": "Test Results",
+    "testResultsDesc": "Lab & imaging reports",
+    "caseLabel": "Describe your case",
+    "casePlaceholder": "Include age, symptoms, duration, and relevant history for the best results…",
+    "tryExample": "Try an example:",
+    "attachLabel": "Attach a document",
+    "optional": "(optional)",
+    "dropHint": "Drop PDF, image, or text file here",
+    "dropBrowse": "or click to browse",
+    "removeFile": "Remove",
+    "submit": "Get Clinical Insights",
+    "analyzing": "Analyzing…"
+  },
+  "voice": {
+    "start": "Start voice input",
+    "stop": "Stop listening",
+    "listen": "Listening… speak now",
+    "unsupported": "Voice input requires Chrome or Edge (Google Speech API)",
+    "readAloud": "Read aloud",
+    "stopReading": "Stop reading",
+    "reading": "Reading…"
+  },
+  "results": {
+    "title": "Results",
+    "subtitle": "Clinical analysis from your knowledge base",
+    "complete": "Analysis complete",
+    "summary": "Summary",
+    "guidance": "Guidance",
+    "redFlags": "Red Flags",
+    "sources": "Sources",
+    "supervisorPlan": "Supervisor Plan",
+    "treatmentPlan": "Treatment Plan",
+    "suggestedTests": "Suggested Tests",
+    "readyTitle": "Ready when you are",
+    "readyText": "Submit a case to receive structured clinical analysis grounded in your medical protocols.",
+    "feature1": "Multi-agent safety pipeline",
+    "feature2": "RAG-powered document retrieval",
+    "feature3": "Summary, guidance & red flags",
+    "blocked": "Request Blocked",
+    "error": "Something Went Wrong",
+    "blockedHint": "Try describing symptoms, reviewing an existing prescription, or sharing test results.",
+    "failed": "Analysis Failed",
+    "medications": "Medications & Dosage",
+    "medicationsSub": "Generic names with specific protocol doses and pill images",
+    "dose": "Dose",
+    "weightDose": "Weight-based dose",
+    "protocolDose": "Protocol reference",
+    "suggestedDose": "Personalized dose",
+    "matchedAs": "Matched as"
+  },
+  "patient": {
+    "title": "Patient details",
+    "optional": "optional — improves dose personalization",
+    "age": "Age (years)",
+    "weight": "Weight (kg)",
+    "gender": "Gender",
+    "genderAll": "All",
+    "genderFemale": "Female",
+    "genderMale": "Male"
+  },
+  "loading": {
+    "title": "Analyzing your case",
+    "subtitle": "Our multi-agent pipeline is reviewing your input against medical protocols…",
+    "safety": "Safety Check",
+    "doctor": "Clinical Analysis",
+    "supervisor": "Supervisor Review"
+  },
+  "examples": {
+    "symptoms1": "Symptoms — sore throat",
+    "symptoms2": "Symptoms — chest pain",
+    "tests1": "Test Results — low hemoglobin",
+    "prescription1": "Prescription — UTI/diabetes meds"
+  }
+}

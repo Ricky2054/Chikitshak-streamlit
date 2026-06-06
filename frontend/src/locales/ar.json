@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "منصة التعليم السريري",
+    "tagline": "تعلم طبي بمساعدة الذكاء الاصطناعي — آمن ومبني على الأدلة.",
+    "footer": "MedRAG · Multi-agent RAG"
+  },
+  "lang": {
+    "label": "اللغة",
+    "voiceHint": "الصوت عبر Google Web Speech في Chrome/Edge"
+  },
+  "form": {
+    "inputTypeLegend": "ماذا تريد تحليله؟",
+    "symptoms": "الأعراض",
+    "symptomsDesc": "العلامات والشكاوى",
+    "prescription": "الوصفة",
+    "prescriptionDesc": "مراجعة الأدوية",
+    "testResults": "نتائج الفحوص",
+    "testResultsDesc": "تقارير المختبر",
+    "caseLabel": "صف حالتك",
+    "casePlaceholder": "اذكر العمر والأعراض والمدة…",
+    "tryExample": "مثال:",
+    "attachLabel": "إرفاق مستند",
+    "optional": "(اختياري)",
+    "dropHint": "أسقط الملف هنا",
+    "dropBrowse": "أو انقر للتصفح",
+    "removeFile": "إزالة",
+    "submit": "احصل على معلومات سريرية",
+    "analyzing": "جاري التحليل…"
+  },
+  "voice": {
+    "start": "إدخال صوتي",
+    "stop": "إيقاف",
+    "listen": "يستمع…",
+    "unsupported": "يتطلب Chrome/Edge",
+    "readAloud": "قراءة بصوت عالٍ",
+    "stopReading": "إيقاف القراءة",
+    "reading": "يقرأ…"
+  },
+  "results": {
+    "title": "النتائج",
+    "subtitle": "تحليل تعليمي",
+    "complete": "مكتمل",
+    "summary": "الملخص",
+    "guidance": "الإرشاد",
+    "redFlags": "علامات الخطر",
+    "sources": "المصادر",
+    "supervisorPlan": "خطة المشرف",
+    "treatmentPlan": "خطة العلاج",
+    "suggestedTests": "فحوص مقترحة",
+    "readyTitle": "جاهز",
+    "readyText": "قدّم وصف الحالة.",
+    "feature1": "خط أنابيب الأمان",
+    "feature2": "بحث RAG",
+    "feature3": "مخرجات منظمة",
+    "blocked": "محظور",
+    "error": "خطأ",
+    "blockedHint": "تعليمي فقط.",
+    "failed": "فشل"
+  },
+  "loading": {
+    "title": "تحليل",
+    "subtitle": "مراجعة البروتوكولات…",
+    "safety": "فحص الأمان",
+    "doctor": "التحليل السريري",
+    "supervisor": "مراجعة المشرف"
+  },
+  "examples": {
+    "symptoms1": "أعراض",
+    "symptoms2": "أعراض",
+    "tests1": "فحوص"
+  }
+}

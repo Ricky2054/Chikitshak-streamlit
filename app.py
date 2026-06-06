@@ -1,216 +1,320 @@
-import streamlit as st
 import os
 from datetime import datetime
 import asyncio
 import re
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from agents.gatekeeper import GatekeeperAgent
 from agents.doctor import DoctorAgent
 from agents.supervisor import SupervisorAgent
 from rag.embeddings import get_embedder
-from rag.knowledge_base import create_medical_knowledge_base
+from rag.knowledge_base import create_medical_knowledge_base, index_file_into_knowledge_base
+from utils.medication_enrichment import enrich_medications
+from utils.patient_context import build_patient_context, patient_dict
+from fastapi import FastAPI, HTTPException, Header, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel
+import yaml
 
-st.set_page_config(page_title="Medical AI Assistant", layout="wide")
-st.title("Medical AI Assistant")
+try:
+    import firebase_admin
+    from firebase_admin import credentials, auth as firebase_auth, firestore
+except Exception:  # pragma: no cover
+    firebase_admin = None
+    credentials = None
+    firebase_auth = None
+    firestore = None
 
-# Helper to format LLM output for user-friendly display
-def format_llm_output(text):
-    summary = ""
-    recommendations = []
-    warnings = []
-    lines = text.split('\n')
-    for line in lines:
-        if re.search(r'(recommend|suggest|should|advise)', line, re.I):
-            recommendations.append(line.strip())
-        elif re.search(r'(warning|caution|danger|side effect)', line, re.I):
-            warnings.append(line.strip())
-        elif not summary and line.strip():
-            summary = line.strip()
-    return summary, recommendations, warnings
+PROJECT_ROOT = Path(__file__).resolve().parent
+FRONTEND_DIST = PROJECT_ROOT / "frontend" / "dist"
 
-# Sidebar: ONLY instructions/info, NO outputs/results
-with st.sidebar:
-    st.header("How to Use")
-    st.markdown("""
-    1. **Upload your medical documents** (PDF, image, or text) in the section below.
-    2. Click **Refresh Knowledge Base** after uploading.
-    3. Enter your symptoms, prescription, or test results in the main form.
-    4. (Optional) Upload a file with your input.
-    5. Click **Submit** to get an AI-powered medical analysis and recommendations.
-    """)
-    st.info("All processing is local and private. No data leaves your computer.")
+api = FastAPI(title="Medical RAG System", version="1.0.0")
+app = api
 
-# Helper to save uploaded file
-def save_uploaded_file(uploaded_file, input_type):
-    if uploaded_file is None:
-        return None
-    folder_map = {
-        "Prescription Review": "data/drug_interactions/",
-        "Test Results": "data/test_references/",
-        "Symptoms": "data/medical_protocols/"
+
+def load_config():
+    cfg_path = os.getenv("MEDRAG_CONFIG", str(PROJECT_ROOT / "config.yaml"))
+    try:
+        with open(cfg_path, "r", encoding="utf-8") as f:
+            return yaml.safe_load(f) or {}
+    except Exception:
+        return {}
+
+
+CONFIG = load_config()
+DISABLE_AUTH = str(os.getenv("DISABLE_AUTH", "")).strip().lower() in {"1", "true", "yes"} or bool(
+    (CONFIG.get("security", {}) or {}).get("disable_auth", False)
+)
+
+api.add_middleware(
+    CORSMiddleware,
+    allow_origins=(CONFIG.get("security", {}) or {}).get("allow_origins", ["*"]),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+db = None
+if not DISABLE_AUTH and firebase_admin is not None:
+    if not firebase_admin._apps:
+        cred_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "firebase_service_account.json")
+        if not os.path.exists(cred_path):
+            raise RuntimeError(
+                "Firebase service account JSON not found. Set GOOGLE_APPLICATION_CREDENTIALS or set DISABLE_AUTH=1."
+            )
+        cred = credentials.Certificate(cred_path)
+        firebase_admin.initialize_app(cred)
+    db = firestore.client()
+
+
+class TokenRequest(BaseModel):
+    id_token: str
+
+
+class ProfileResponse(BaseModel):
+    uid: str
+    name: str
+    email: str
+    avatar: str
+
+
+def verify_firebase_token(id_token: str):
+    if DISABLE_AUTH:
+        return "dev-user", {"uid": "dev-user", "name": "Dev", "email": "dev@example.com"}
+    if firebase_auth is None:
+        raise HTTPException(status_code=503, detail="Firebase auth is not available")
+    try:
+        decoded_token = firebase_auth.verify_id_token(id_token)
+        uid = decoded_token["uid"]
+        return uid, decoded_token
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
+
+
+@api.post("/api/auth/verify", response_model=ProfileResponse)
+def verify_auth_token(req: TokenRequest):
+    uid, decoded = verify_firebase_token(req.id_token)
+    name = decoded.get("name", "")
+    email = decoded.get("email", "")
+    avatar = decoded.get("picture", "")
+    if db is not None:
+        user_ref = db.collection("users").document(uid)
+        user_ref.set(
+            {
+                "uid": uid,
+                "name": name,
+                "email": email,
+                "avatar": avatar,
+                "updated_at": firestore.SERVER_TIMESTAMP,
+            },
+            merge=True,
+        )
+    return ProfileResponse(uid=uid, name=name, email=email, avatar=avatar)
+
+
+@api.get("/api/profile", response_model=ProfileResponse)
+def get_profile(authorization: str | None = Header(None)):
+    if not DISABLE_AUTH:
+        if not authorization or not authorization.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Missing Bearer token")
+        id_token = authorization.split(" ", 1)[1]
+        uid, decoded = verify_firebase_token(id_token)
+    else:
+        uid, decoded = verify_firebase_token("")
+
+    if db is None:
+        return ProfileResponse(
+            uid=uid,
+            name=decoded.get("name", ""),
+            email=decoded.get("email", ""),
+            avatar=decoded.get("picture", ""),
+        )
+    user_ref = db.collection("users").document(uid)
+    user_doc = user_ref.get()
+    if not user_doc.exists:
+        raise HTTPException(status_code=404, detail="User not found")
+    user = user_doc.to_dict()
+    return ProfileResponse(
+        uid=uid,
+        name=user.get("name", ""),
+        email=user.get("email", ""),
+        avatar=user.get("avatar", ""),
+    )
+
+
+embedder = None
+knowledge_base = None
+gatekeeper = None
+doctor = None
+supervisor = None
+kb_lock = asyncio.Lock()
+kb_build_task = None
+kb_ready = False
+kb_error = None
+
+
+async def _build_kb_in_background():
+    global knowledge_base, kb_ready, kb_error
+    try:
+        kb = await asyncio.to_thread(create_medical_knowledge_base, embedder, CONFIG)
+        async with kb_lock:
+            knowledge_base = kb
+            kb_ready = kb is not None
+            kb_error = None if kb is not None else "No documents indexed"
+    except Exception as e:
+        kb_error = str(e)
+        print(f"Knowledge base build failed: {e}")
+
+
+def _apply_provider_env():
+    provider_cfg = CONFIG.get("provider", {}) or {}
+    if not os.getenv("LLM_PROVIDER"):
+        os.environ["LLM_PROVIDER"] = str(provider_cfg.get("llm", "openrouter"))
+    if not os.getenv("EMBEDDING_PROVIDER"):
+        os.environ["EMBEDDING_PROVIDER"] = str(provider_cfg.get("embeddings", "local"))
+
+
+@api.on_event("startup")
+async def _startup_init():
+    global embedder, gatekeeper, doctor, supervisor, kb_build_task
+    _apply_provider_env()
+    models = CONFIG.get("models", {}) or {}
+    embedder = get_embedder(models.get("embedder", "all-MiniLM-L6-v2"))
+    gatekeeper = GatekeeperAgent()
+    doctor = DoctorAgent(llm_model=models.get("doctor", "meta-llama/llama-3.2-3b-instruct"))
+    supervisor = SupervisorAgent(llm_model=models.get("supervisor", "meta-llama/llama-3.2-3b-instruct"))
+    kb_build_task = asyncio.create_task(_build_kb_in_background())
+
+
+@api.get("/healthz")
+async def healthz():
+    llm_ok = False
+    if doctor is not None and hasattr(doctor, "llm") and hasattr(doctor.llm, "ping"):
+        try:
+            llm_ok = await doctor.llm.ping()
+        except Exception:
+            llm_ok = False
+
+    return {
+        "status": "ok",
+        "kb_ready": kb_ready,
+        "kb_error": kb_error,
+        "llm_reachable": llm_ok,
+        "llm_provider": os.getenv("LLM_PROVIDER", "openrouter"),
+        "embedding_provider": os.getenv("EMBEDDING_PROVIDER", "local"),
+        "auth_disabled": DISABLE_AUTH,
     }
-    folder = folder_map.get(input_type, "data/medical_protocols/")
-    os.makedirs(folder, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{timestamp}_{uploaded_file.name}"
-    file_path = os.path.join(folder, filename)
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-    return file_path
 
-# Knowledge base and agents (init only once)
-if 'embedder' not in st.session_state:
-    st.session_state['embedder'] = get_embedder()
-if 'knowledge_base' not in st.session_state:
-    st.session_state['knowledge_base'] = None
-if 'gatekeeper' not in st.session_state:
-    st.session_state['gatekeeper'] = GatekeeperAgent()
-if 'doctor' not in st.session_state:
-    st.session_state['doctor'] = DoctorAgent()
-if 'supervisor' not in st.session_state:
-    st.session_state['supervisor'] = SupervisorAgent()
 
-gatekeeper = st.session_state['gatekeeper']
-doctor = st.session_state['doctor']
-supervisor = st.session_state['supervisor']
-embedder = st.session_state['embedder']
+@api.post("/api/medical/analyze")
+async def medical_analyze(
+    user_input: str = Form(...),
+    input_type: str = Form(...),
+    language: str = Form("en"),
+    patient_age: str = Form(""),
+    patient_weight_kg: str = Form(""),
+    patient_gender: str = Form("All"),
+    file: UploadFile = File(None),
+    authorization: str | None = Header(None),
+):
+    if not DISABLE_AUTH:
+        if not authorization or not authorization.startswith("Bearer "):
+            raise HTTPException(status_code=401, detail="Missing Bearer token")
+        id_token = authorization.split(" ", 1)[1]
+        verify_firebase_token(id_token)
 
-# Document upload and knowledge base refresh UI (main area only)
-st.subheader("Step 1: Upload Medical Documents")
-doc_input_type = st.selectbox("Document Type", ["Symptoms", "Prescription Review", "Test Results"], key="doc_type", help="What kind of document are you uploading?")
-doc_uploaded_file = st.file_uploader("Upload a document (PDF, image, or text)", type=["pdf", "jpg", "png", "jpeg", "txt"], key="doc_upload", help="Upload your medical files here.")
-if st.button("Add Document to Knowledge Base"):
-    if doc_uploaded_file is not None:
-        save_uploaded_file(doc_uploaded_file, doc_input_type)
-        st.success(f"Document '{doc_uploaded_file.name}' uploaded and saved.")
-    else:
-        st.warning("Please upload a document before adding.")
-if st.button("Step 2: Refresh Knowledge Base"):
-    st.session_state['knowledge_base'] = create_medical_knowledge_base(embedder)
-    if st.session_state['knowledge_base'] is not None:
-        st.success("Knowledge base refreshed with current documents.")
-    else:
-        st.error("No valid documents found. Please upload documents first.")
-
-knowledge_base = st.session_state['knowledge_base']
-
-# Async workflow for agent chain
-async def agent_workflow(user_input, input_type, uploaded_file, knowledge_base):
-    agent_log = []
     file_path = None
-    if uploaded_file is not None:
-        file_path = save_uploaded_file(uploaded_file, input_type)
+    if file is not None:
+        folder_map = {
+            "Prescription Review": "data/drug_interactions/",
+            "Test Results": "data/test_references/",
+            "Symptoms": "data/medical_protocols/",
+        }
+        folder = folder_map.get(input_type, "data/medical_protocols/")
+        os.makedirs(PROJECT_ROOT / folder, exist_ok=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{timestamp}_{file.filename}"
+        file_path = str(PROJECT_ROOT / folder / filename)
+        with open(file_path, "wb") as f_out:
+            f_out.write(await file.read())
+
+    agent_log = []
+    if file_path:
         agent_log.append(f"File saved to: {file_path}")
-    gatekeeper_result = await gatekeeper.process(user_input, input_type, file_path)
+
+    if gatekeeper is None or doctor is None or supervisor is None:
+        raise HTTPException(status_code=503, detail="Service not initialized yet")
+
+    if hasattr(doctor, "llm") and hasattr(doctor.llm, "ping"):
+        try:
+            if not await doctor.llm.ping():
+                raise HTTPException(
+                    status_code=503,
+                    detail="LLM provider is not reachable. Set OPENROUTER_API_KEY and verify your model names in config.yaml.",
+                )
+        except HTTPException:
+            raise
+        except Exception:
+            raise HTTPException(status_code=503, detail="Unable to reach LLM provider.")
+
+    patient_ctx = build_patient_context(patient_age, patient_weight_kg, patient_gender)
+    gatekeeper_result = await gatekeeper.process(
+        user_input, input_type, file_path, language=language, patient_context=patient_ctx
+    )
     agent_log.append({"Gatekeeper": gatekeeper_result})
     if gatekeeper_result.get("status") != "ok":
-        return agent_log, gatekeeper_result
+        return JSONResponse({"agent_log": agent_log, "result": gatekeeper_result}, status_code=200)
+
+    global knowledge_base
+    if file_path and embedder is not None:
+        async with kb_lock:
+            knowledge_base = index_file_into_knowledge_base(knowledge_base, embedder, file_path, config=CONFIG)
+
+    if knowledge_base is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Knowledge base is still building or empty. Check /healthz and server logs.",
+        )
+
     doctor_result = await doctor.analyze(gatekeeper_result, knowledge_base)
     agent_log.append({"Doctor": doctor_result})
     if doctor_result.get("status") != "ok":
-        return agent_log, doctor_result
+        return JSONResponse({"agent_log": agent_log, "result": doctor_result}, status_code=200)
+
     supervisor_result = await supervisor.review(doctor_result)
     agent_log.append({"Supervisor": supervisor_result})
-    return agent_log, supervisor_result
 
-# Main UI (all outputs/results here)
-st.subheader("Step 3: Get Your Medical Analysis")
-col1, col2 = st.columns([2, 1])
+    medications = await enrich_medications(
+        supervisor_result.get("analysis", ""),
+        doctor_result.get("relevant_docs", []),
+        patient_dict(patient_age, patient_weight_kg, patient_gender),
+    )
+    supervisor_result["medications"] = medications
+    supervisor_result["patient"] = patient_dict(patient_age, patient_weight_kg, patient_gender)
 
-with col1:
-    st.markdown("**Describe your case below.**")
-    input_type = st.selectbox("Type of Input", ["Symptoms", "Prescription Review", "Test Results"], help="What are you submitting?")
-    user_input = st.text_area("Describe your input:", help="Type your symptoms, prescription, or test results here.")
-    uploaded_file = st.file_uploader("(Optional) Upload a file with your input", type=["pdf", "jpg", "png"], key="main_upload", help="Attach a file if you have one.")
-    if st.button("Step 4: Submit for Analysis"):
-        st.session_state['last_input'] = user_input
-        st.session_state['last_type'] = input_type
-        st.session_state['last_file'] = uploaded_file
-        st.session_state['agent_log'] = []
-        if knowledge_base is None:
-            st.error("Knowledge base is empty. Please upload and refresh documents first.")
-        else:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            agent_log, final_result = loop.run_until_complete(agent_workflow(user_input, input_type, uploaded_file, knowledge_base))
-            st.session_state['agent_log'] = agent_log
-            st.session_state['final_result'] = final_result
+    return {"agent_log": agent_log, "result": supervisor_result}
 
-# Move output sections below the columns for full width
-def show_agent_outputs():
-    st.header("Agent Reasoning (Step-by-Step)")
-    if 'agent_log' in st.session_state:
-        for entry in st.session_state['agent_log']:
-            if isinstance(entry, dict):
-                for agent, output in entry.items():
-                    with st.expander(f"{agent} Output", expanded=(agent == 'Supervisor')):
-                        if isinstance(output, dict):
-                            # DoctorAgent: pretty print LLM output
-                            if agent == "Doctor" and output.get("analysis"):
-                                summary, recs, warns = format_llm_output(output["analysis"])
-                                if summary:
-                                    st.markdown(f"**Summary:** {summary}")
-                                if recs:
-                                    st.markdown("**Recommendations:**")
-                                    for r in recs:
-                                        st.markdown(f"- {r}")
-                                if warns:
-                                    st.markdown("**Warnings:**")
-                                    for w in warns:
-                                        st.markdown(f":warning: {w}")
-                            # SupervisorAgent: show final plan in plain language
-                            elif agent == "Supervisor" and output.get("final_plan"):
-                                plan = output["final_plan"]
-                                if plan and plan.get('treatment', '').strip():
-                                    st.success(f"**Treatment Plan:** {plan.get('treatment', '')}")
-                                    if plan.get('additional_tests'):
-                                        st.info(f"**Additional Tests:** {', '.join(plan['additional_tests'])}")
-                                else:
-                                    # Fallback: show raw LLM output for debugging
-                                    raw = output.get('analysis', '')
-                                    if raw:
-                                        st.warning("Raw Supervisor LLM Output (for debugging):")
-                                        st.code(raw)
-                            # Gatekeeper: show sanitized input
-                            elif agent == "Gatekeeper" and output.get("sanitized_input"):
-                                st.markdown(f"**Sanitized Input:** {output['sanitized_input']}")
-                            # Show relevant docs if present
-                            if output.get("relevant_docs"):
-                                with st.expander("Relevant Documents Used"):
-                                    for i, doc in enumerate(output["relevant_docs"]):
-                                        st.markdown(f"**Doc {i+1}:** {doc[:400]}{'...' if len(doc) > 400 else ''}")
-                        else:
-                            st.write(output)
-            else:
-                # entry is not a dict (e.g., a string like 'File saved to: ...')
-                st.info(str(entry))
-    st.header("Final Medical Recommendation")
-    if 'final_result' in st.session_state:
-        if isinstance(st.session_state['final_result'], dict):
-            if st.session_state['final_result'].get("status") == "ok":
-                plan = st.session_state['final_result'].get("final_plan")
-                if plan:
-                    st.success(f"**Treatment Plan:** {plan.get('treatment', '')}")
-                    if plan.get('additional_tests'):
-                        st.info(f"**Additional Tests:** {', '.join(plan['additional_tests'])}")
-                else:
-                    # If no plan, show formatted analysis
-                    analysis = st.session_state['final_result'].get("analysis")
-                    if analysis:
-                        summary, recs, warns = format_llm_output(analysis)
-                        if summary:
-                            st.markdown(f"**Summary:** {summary}")
-                        if recs:
-                            st.markdown("**Recommendations:**")
-                            for r in recs:
-                                st.markdown(f"- {r}")
-                        if warns:
-                            st.markdown("**Warnings:**")
-                            for w in warns:
-                                st.markdown(f":warning: {w}")
-                    else:
-                        st.success("See above for details.")
-            else:
-                st.error(st.session_state['final_result'].get("message", "An error occurred."))
 
-# Show outputs below the columns
-show_agent_outputs() 
+if FRONTEND_DIST.exists():
+    assets_dir = FRONTEND_DIST / "assets"
+    if assets_dir.exists():
+        api.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+    @api.get("/")
+    async def serve_frontend():
+        return FileResponse(str(FRONTEND_DIST / "index.html"))
+
+    @api.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api/") or full_path == "healthz":
+            raise HTTPException(status_code=404, detail="Not found")
+        candidate = FRONTEND_DIST / full_path
+        if candidate.is_file():
+            return FileResponse(str(candidate))
+        return FileResponse(str(FRONTEND_DIST / "index.html"))

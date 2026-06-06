@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "क्लिनिकल शिक्षा मंच",
+    "tagline": "आपके प्रोटोकॉल पर आधारित AI-सहायता प्राप्त चिकित्सा शिक्षा — सुरक्षित, संरचित और साक्ष्य-आधारित।",
+    "footer": "MedRAG · मल्टी-एजेंट RAG · Gatekeeper → Doctor → Supervisor"
+  },
+  "lang": {
+    "label": "भाषा",
+    "voiceHint": "Chrome/Edge में Google Web Speech का उपयोग"
+  },
+  "form": {
+    "inputTypeLegend": "आप क्या विश्लेषण करना चाहते हैं?",
+    "symptoms": "लक्षण",
+    "symptomsDesc": "संकेत और शिकायतें",
+    "prescription": "प्रिस्क्रिप्शन",
+    "prescriptionDesc": "दवाओं की समीक्षा",
+    "testResults": "टेस्ट परिणाम",
+    "testResultsDesc": "लैब और इमेजिंग",
+    "caseLabel": "अपना केस बताएं",
+    "casePlaceholder": "उम्र, लक्षण, अवधि और संबंधित इतिहास शामिल करें…",
+    "tryExample": "उदाहरण आज़माएं:",
+    "attachLabel": "दस्तावेज़ संलग्न करें",
+    "optional": "(वैकल्पिक)",
+    "dropHint": "PDF, छवि या टेक्स्ट यहाँ छोड़ें",
+    "dropBrowse": "या ब्राउज़ करने के लिए क्लिक करें",
+    "removeFile": "हटाएं",
+    "submit": "क्लिनिकल जानकारी प्राप्त करें",
+    "analyzing": "विश्लेषण हो रहा है…"
+  },
+  "voice": {
+    "start": "वॉइस इनपुट शुरू करें",
+    "stop": "सुनना बंद करें",
+    "listen": "सुन रहा है… अब बोलें",
+    "unsupported": "वॉइस इनपुट के लिए Chrome या Edge आवश्यक",
+    "readAloud": "ज़ोर से पढ़ें",
+    "stopReading": "पढ़ना बंद करें",
+    "reading": "पढ़ रहा है…"
+  },
+  "results": {
+    "title": "परिणाम",
+    "subtitle": "आपके ज्ञान आधार से शैक्षिक विश्लेषण",
+    "complete": "विश्लेषण पूर्ण",
+    "summary": "सारांश",
+    "guidance": "मार्गदर्शन",
+    "redFlags": "खतरे के संकेत",
+    "sources": "स्रोत",
+    "supervisorPlan": "सुपरवाइज़र योजना",
+    "treatmentPlan": "उपचार योजना",
+    "suggestedTests": "सुझाए गए परीक्षण",
+    "readyTitle": "तैयार हैं जब आप हों",
+    "readyText": "संरचित चिकित्सा शिक्षा के लिए केस विवरण जमा करें।",
+    "feature1": "मल्टी-एजेंट सुरक्षा पाइपलाइन",
+    "feature2": "RAG-संचालित दस्तावेज़ खोज",
+    "feature3": "सारांश, मार्गदर्शन और खतरे के संकेत",
+    "blocked": "अनुरोध अवरुद्ध",
+    "error": "कुछ गलत हो गया",
+    "blockedHint": "केवल शैक्षिक जानकारी — न prescription, न dosing।",
+    "failed": "विश्लेषण विफल"
+  },
+  "loading": {
+    "title": "आपके केस का विश्लेषण",
+    "subtitle": "हमारी पाइपलाइन आपके इनपुट की समीक्षा कर रही है…",
+    "safety": "सुरक्षा जांच",
+    "doctor": "क्लिनिकल विश्लेषण",
+    "supervisor": "सुपरवाइज़र समीक्षा"
+  },
+  "examples": {
+    "symptoms1": "लक्षण — गले में खराश",
+    "symptoms2": "लक्षण — सीने में दर्द",
+    "tests1": "टेस्ट — कम हीमoglobin"
+  }
+}

@@ -1,15 +1,27 @@
 import httpx
 import asyncio
+import os
 
 class OllamaLLM:
     def __init__(self, model):
         self.model = model
-        self.api_url = "http://localhost:11434/api/generate"  # Default Ollama endpoint
+        self.base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").rstrip("/")
+        self.api_url = f"{self.base_url}/api/generate"  # Default Ollama endpoint
+
+    async def ping(self) -> bool:
+        """Return True if Ollama server is reachable."""
+        timeout = httpx.Timeout(2.0, connect=1.0)
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                r = await client.get(f"{self.base_url}/api/tags")
+                return r.status_code == 200
+        except Exception:
+            return False
 
     async def agenerate(self, prompts, context=None):
         results = []
-        timeout = httpx.Timeout(120.0, connect=30.0)  # 2 minutes total, 30s connect
-        max_retries = 3
+        timeout = httpx.Timeout(60.0, connect=5.0)  # Fail faster when Ollama is down
+        max_retries = 2
         async with httpx.AsyncClient(timeout=timeout) as client:
             for prompt in prompts:
                 for attempt in range(max_retries):
@@ -21,7 +33,7 @@ class OllamaLLM:
                         data = response.json()
                         results.append(data.get("response", ""))
                         break  # Success, break retry loop
-                    except (httpx.ReadTimeout, httpx.ConnectTimeout) as e:
+                    except (httpx.ReadTimeout, httpx.ConnectTimeout, httpx.ConnectError) as e:
                         if attempt < max_retries - 1:
                             await asyncio.sleep(2 * (attempt + 1))  # Exponential backoff
                             continue

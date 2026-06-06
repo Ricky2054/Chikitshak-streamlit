@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.cache/
+logs/
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Secrets
+firebase_service_account.json
+
+# Deploy / local
+.vercel/
+frontend/.env
+frontend/.env.local

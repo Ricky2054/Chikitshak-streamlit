@@ -1,0 +1,72 @@
+{
+  "app": {
+    "eyebrow": "Clinical Education Platform",
+    "tagline": "AI-assisted medical learning — safe and evidence-based.",
+    "footer": "MedRAG · Multi-agent RAG"
+  },
+  "lang": {
+    "label": "Language",
+    "voiceHint": "Voice uses Google Web Speech in Chrome/Edge"
+  },
+  "form": {
+    "inputTypeLegend": "What would you like to analyze?",
+    "symptoms": "Symptoms",
+    "symptomsDesc": "Signs & complaints",
+    "prescription": "Prescription",
+    "prescriptionDesc": "Review medications",
+    "testResults": "Test Results",
+    "testResultsDesc": "Lab reports",
+    "caseLabel": "Describe your case",
+    "casePlaceholder": "Include age, symptoms, duration…",
+    "tryExample": "Try an example:",
+    "attachLabel": "Attach document",
+    "optional": "(optional)",
+    "dropHint": "Drop file here",
+    "dropBrowse": "or click to browse",
+    "removeFile": "Remove",
+    "submit": "Get Clinical Insights",
+    "analyzing": "Analyzing…"
+  },
+  "voice": {
+    "start": "Start voice",
+    "stop": "Stop",
+    "listen": "Listening…",
+    "unsupported": "Voice requires Chrome/Edge",
+    "readAloud": "Read aloud",
+    "stopReading": "Stop reading",
+    "reading": "Reading…"
+  },
+  "results": {
+    "title": "Results",
+    "subtitle": "Clinical analysis",
+    "complete": "Complete",
+    "summary": "Summary",
+    "guidance": "Guidance",
+    "redFlags": "Red Flags",
+    "sources": "Sources",
+    "supervisorPlan": "Supervisor Plan",
+    "treatmentPlan": "Treatment Plan",
+    "suggestedTests": "Suggested Tests",
+    "readyTitle": "Ready",
+    "readyText": "Submit a case to begin.",
+    "feature1": "Safety pipeline",
+    "feature2": "RAG retrieval",
+    "feature3": "Structured output",
+    "blocked": "Blocked",
+    "error": "Error",
+    "blockedHint": "Try symptoms, prescription review, or test results.",
+    "failed": "Failed"
+  },
+  "loading": {
+    "title": "Analyzing",
+    "subtitle": "Reviewing against protocols…",
+    "safety": "Safety Check",
+    "doctor": "Clinical Analysis",
+    "supervisor": "Supervisor Review"
+  },
+  "examples": {
+    "symptoms1": "Symptoms",
+    "symptoms2": "Symptoms",
+    "tests1": "Tests"
+  }
+}
